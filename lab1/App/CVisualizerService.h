@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IGraphVisualizer.h"
-#include "IInputOutputAdapter.hpp"
+#include "IInputOutputAdapter.h"
 
 class CVisualizerService
 {

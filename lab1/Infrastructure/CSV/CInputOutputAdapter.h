@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../App/IInputOutputAdapter.hpp"
+#include "../../App/IInputOutputAdapter.h"
 
 class CInputOutputAdapter : public IInputOutputAdapter
 {
