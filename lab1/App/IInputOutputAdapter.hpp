@@ -9,11 +9,6 @@ struct InitialStateAndInputSymbol
 {
 	std::string state;
 	std::string symbol;
-
-	std::size_t operator()() const
-	{
-		return std::hash<std::string>()(state) ^ std::hash<std::string>()(symbol);
-	}
 };
 
 template <>
