@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
-project(lab1 LANGUAGES CXX)
+project(lab1-checker LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(lab1
+add_executable(lab1-checker
                main.cpp
                App/IInputOutputAdapter.hpp
                Infrastructure/CSV/CInputOutputAdapter.cpp
