@@ -5,8 +5,8 @@
 class CGraphVisualizer : public IGraphVisualizer
 {
 public:
-	void SetVertices(IGraphVisualizer::Vertices&& vertices);
-	void SetEdges(IGraphVisualizer::Edges&& edges);
+	void SetVertices(IGraphVisualizer::Vertices&& vertices) override;
+	void SetEdges(IGraphVisualizer::Edges&& edges) override;
 	void DrawGraph(std::string const& filename) override;
 
 private:
