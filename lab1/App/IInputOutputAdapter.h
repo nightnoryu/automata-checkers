@@ -11,12 +11,19 @@ struct InitialStateAndInputSymbol
 	std::string symbol;
 };
 
-template <>
-struct std::hash<InitialStateAndInputSymbol>
+struct KeyHash
 {
 	std::size_t operator()(InitialStateAndInputSymbol const& key) const
 	{
-		return std::hash<std::string>()(key.state) ^ std::hash<std::string>()(key.symbol);
+		return std::hash<std::string>()(key.state) ^ (std::hash<std::string>()(key.symbol) << 1);
+	}
+};
+
+struct KeyEqual
+{
+	bool operator()(const InitialStateAndInputSymbol& lhs, const InitialStateAndInputSymbol& rhs) const
+	{
+		return lhs.state == rhs.state && lhs.symbol == rhs.symbol;
 	}
 };
 
@@ -26,11 +33,14 @@ struct DestinationStateAndSignal
 	std::string signal;
 };
 
+using MealyMoves = std::unordered_map<InitialStateAndInputSymbol, DestinationStateAndSignal, KeyHash, KeyEqual>;
+using MooreMoves = std::unordered_map<InitialStateAndInputSymbol, std::string, KeyHash, KeyEqual>;
+
 struct MealyAutomaton
 {
 	std::vector<std::string> states;
 	std::vector<std::string> inputSymbols;
-	std::unordered_map<InitialStateAndInputSymbol, DestinationStateAndSignal> moves;
+	MealyMoves moves;
 };
 
 struct MooreAutomaton
@@ -38,7 +48,7 @@ struct MooreAutomaton
 	std::vector<std::string> states;
 	std::vector<std::string> inputSymbols;
 	std::unordered_map<std::string, std::string> stateSignals;
-	std::unordered_map<InitialStateAndInputSymbol, std::string> moves;
+	MooreMoves moves;
 };
 
 class IInputOutputAdapter
