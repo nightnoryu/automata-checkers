@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+mkdir -p cmake-build-$1
+
+USER_ID=$(id -u)
+
+docker run -t -i \
+  --user "$USER_ID" \
+  -v /etc/passwd:/etc/passwd:ro \
+  -v /etc/group:/etc/group:ro \
+  -v ${PWD}/$1:/app/src \
+  -v ${PWD}/cmake-build-$1:/app/build \
+  automata-checkers-builder \
+  $2
