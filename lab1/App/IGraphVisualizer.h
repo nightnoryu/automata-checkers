@@ -6,15 +6,19 @@
 class IGraphVisualizer
 {
 public:
-	using Edge = std::pair<int, int>;
+	using Vertex = std::string;
+	using Vertices = std::vector<Vertex>;
+
+	struct Edge
+	{
+		int from;
+		int to;
+		std::string label;
+	};
 	using Edges = std::vector<Edge>;
 
-	using EdgeLabel = std::string;
-	using EdgeLabels = std::vector<EdgeLabel>;
-
-	using Weight = int;
-	using Weights = std::vector<Weight>;
-
+	virtual void SetVertices(IGraphVisualizer::Vertices&& vertices) = 0;
+	virtual void SetEdges(IGraphVisualizer::Edges&& edges) = 0;
 	virtual void DrawGraph(std::string const& filename) = 0;
 
 	virtual ~IGraphVisualizer() = default;

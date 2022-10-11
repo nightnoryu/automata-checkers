@@ -1,6 +1,16 @@
 #include "CGraphVisualizer.h"
 #include <fstream>
 
+void CGraphVisualizer::SetVertices(IGraphVisualizer::Vertices&& vertices)
+{
+	m_vertices = std::move(vertices);
+}
+
+void CGraphVisualizer::SetEdges(IGraphVisualizer::Edges&& edges)
+{
+	m_edges = std::move(edges);
+}
+
 void CGraphVisualizer::DrawGraph(const std::string& filename)
 {
 	std::ofstream output(filename);
@@ -9,10 +19,17 @@ void CGraphVisualizer::DrawGraph(const std::string& filename)
 		throw std::runtime_error("failed to open output file for writing");
 	}
 
-	IGraphVisualizer::Edges edges = { { 0, 1 }, { 1, 0 } };
-	IGraphVisualizer::EdgeLabels names = { "a1", "a2" };
-	IGraphVisualizer::Weights weights = { 1, 2 };
+	output << "digraph G {\n";
 
-	Graph graph(edges.begin(), edges.end(), weights.begin(), edges.size());
-	boost::write_graphviz(output, graph, boost::make_label_writer(names.data()));
+	for (std::size_t i = 0; i < m_vertices.size(); ++i)
+	{
+		output << i << " [label=\"" << m_vertices[i] << "\"];\n";
+	}
+
+	for (auto&& edge : m_edges)
+	{
+		output << edge.from << "->" << edge.to << " [label=\"" << edge.label << "\"];\n";
+	}
+
+	output << "}\n";
 }
