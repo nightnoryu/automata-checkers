@@ -1,21 +1,18 @@
 #include "CGraphVisualizer.h"
-
-void CGraphVisualizer::SetVertexCount(std::size_t count)
-{
-	// TODO
-}
-
-void CGraphVisualizer::SetEdges(const IGraphVisualizer::Edges& edges)
-{
-	// TODO
-}
-
-void CGraphVisualizer::SetWeights(const IGraphVisualizer::Weights& weights)
-{
-	// TODO
-}
+#include <fstream>
 
 void CGraphVisualizer::DrawGraph(const std::string& filename)
 {
-	// TODO
+	std::ofstream output(filename);
+	if (!output.is_open())
+	{
+		throw std::runtime_error("failed to open output file for writing");
+	}
+
+	IGraphVisualizer::Edges edges = { { 0, 1 }, { 1, 0 } };
+	IGraphVisualizer::EdgeLabels names = { "a1", "a2" };
+	IGraphVisualizer::Weights weights = { 1, 2 };
+
+	Graph graph(edges.begin(), edges.end(), weights.begin(), edges.size());
+	boost::write_graphviz(output, graph, boost::make_label_writer(names.data()));
 }

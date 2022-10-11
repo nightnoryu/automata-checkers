@@ -9,12 +9,12 @@ public:
 	using Edge = std::pair<int, int>;
 	using Edges = std::vector<Edge>;
 
-	using Weight = double;
+	using EdgeLabel = std::string;
+	using EdgeLabels = std::vector<EdgeLabel>;
+
+	using Weight = int;
 	using Weights = std::vector<Weight>;
 
-	virtual void SetVertexCount(std::size_t count) = 0;
-	virtual void SetEdges(Edges const& edges) = 0;
-	virtual void SetWeights(Weights const& weights) = 0;
 	virtual void DrawGraph(std::string const& filename) = 0;
 
 	virtual ~IGraphVisualizer() = default;

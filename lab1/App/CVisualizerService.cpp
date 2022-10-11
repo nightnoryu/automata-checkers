@@ -9,7 +9,7 @@ CVisualizerService::CVisualizerService(IInputOutputAdapterPtr&& inputOutputAdapt
 void CVisualizerService::DrawMealy(const std::string& inputFilename, const std::string& outputFilename)
 {
 	auto const automaton = m_inputOutputAdapter->GetMealy(inputFilename);
-	// TODO: implement drawing using m_graphVisualizer
+	m_graphVisualizer->DrawGraph(outputFilename);
 }
 
 void CVisualizerService::DrawMoore(const std::string& inputFilename, const std::string& outputFilename)
