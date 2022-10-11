@@ -34,7 +34,7 @@ Args ParseArgs(int argc, char** argv)
 	}
 	else if (strType == MOORE_TYPE)
 	{
-		type = AutomatonType::Mealy;
+		type = AutomatonType::Moore;
 	}
 	else
 	{
