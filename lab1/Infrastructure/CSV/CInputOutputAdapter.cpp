@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std::string& filename)
+CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std::string& filename) const
 {
 	std::ifstream input(filename);
 	if (!input.is_open())
@@ -20,7 +20,7 @@ CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std:
 		std::istringstream iss(row);
 		std::vector<std::string> rows;
 
-		while (std::getline(iss, cell, ','))
+		while (std::getline(iss, cell, delimiter))
 		{
 			rows.push_back(cell);
 		}
