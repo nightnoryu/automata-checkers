@@ -16,6 +16,6 @@ if [ ! -f "$CHECKER" ]; then
     exit 1
 fi
 
-"$CHECKER" "$2" "$3" "$TEMP_FILE"
+"$CHECKER" "$MODE" "$INPUT_FILE" "$TEMP_FILE"
 dot -Tpng "-o$OUTPUT_FILE" "$TEMP_FILE"
 rm "$TEMP_FILE"
