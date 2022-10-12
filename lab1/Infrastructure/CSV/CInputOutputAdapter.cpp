@@ -94,8 +94,6 @@ MooreAutomaton CInputOutputAdapter::GetMoore(const std::string& filename)
 	std::unordered_map<std::string, std::string> stateSignals;
 	MooreMoves moves;
 
-	std::vector<std::string> elements;
-
 	for (int rowIndex = 0; rowIndex < spreadsheet.size(); ++rowIndex)
 	{
 		for (int columnIndex = 0; columnIndex < spreadsheet[rowIndex].size(); ++columnIndex)
@@ -120,8 +118,6 @@ MooreAutomaton CInputOutputAdapter::GetMoore(const std::string& filename)
 			}
 
 			moves.insert({ { spreadsheet[1][columnIndex], spreadsheet[rowIndex][0] }, spreadsheet[rowIndex][columnIndex] });
-
-			elements.clear();
 		}
 	}
 
