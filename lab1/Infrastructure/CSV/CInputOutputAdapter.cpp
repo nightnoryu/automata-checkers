@@ -1,6 +1,6 @@
 #include "CInputOutputAdapter.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std::string& filename)
@@ -15,12 +15,12 @@ CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std:
 	std::string row;
 	std::string cell;
 
-	while(std::getline(input, row))
+	while (std::getline(input, row))
 	{
 		std::istringstream iss(row);
 		std::vector<std::string> rows;
 
-		while(std::getline(iss, cell, ','))
+		while (std::getline(iss, cell, ','))
 		{
 			rows.push_back(cell);
 		}
@@ -70,8 +70,8 @@ MealyAutomaton CInputOutputAdapter::GetMealy(const std::string& filename)
 			}
 
 			moves.insert({
-				{spreadsheet[0][columnIndex], spreadsheet[rowIndex][0]},
-				{elements[0], elements[1]}
+				{ spreadsheet[0][columnIndex], spreadsheet[rowIndex][0] },
+				{ elements[0], elements[1] }
 			});
 
 			elements.clear();
@@ -87,28 +87,48 @@ MealyAutomaton CInputOutputAdapter::GetMealy(const std::string& filename)
 
 MooreAutomaton CInputOutputAdapter::GetMoore(const std::string& filename)
 {
-	// TODO: implement parsing from CSV
+	Spreadsheet spreadsheet = GetDataFromFile(filename);
+
+	std::vector<std::string> states;
+	std::vector<std::string> inputSymbols;
+	std::unordered_map<std::string, std::string> stateSignals;
+	MooreMoves moves;
+
+	std::vector<std::string> elements;
+
+	for (int rowIndex = 0; rowIndex < spreadsheet.size(); ++rowIndex)
+	{
+		for (int columnIndex = 0; columnIndex < spreadsheet[rowIndex].size(); ++columnIndex)
+		{
+			if (rowIndex == 0)
+			{
+				continue;
+			}
+
+			if (rowIndex == 1)
+			{
+				if (columnIndex == 0) { continue; }
+				states.push_back(spreadsheet[rowIndex][columnIndex]);
+				stateSignals.insert({ spreadsheet[rowIndex][columnIndex], spreadsheet[rowIndex - 1][columnIndex] });
+				continue;
+			}
+
+			if (columnIndex == 0)
+			{
+				inputSymbols.push_back(spreadsheet[rowIndex][columnIndex]);
+				continue;
+			}
+
+			moves.insert({ { spreadsheet[1][columnIndex], spreadsheet[rowIndex][0] }, spreadsheet[rowIndex][columnIndex] });
+
+			elements.clear();
+		}
+	}
+
 	return {
-		.states = { "S0", "S1", "S2", "S3", "S4" },
-		.inputSymbols = { "z1", "z2" },
-		.stateSignals = {
-			{"S0", "w1"},
-			{"S1", "w1"},
-			{"S2", "w2"},
-			{"S3", "w2"},
-			{"S4", "w1"},
-		},
-		.moves = {
-			{ { "S0", "z1" }, "S2" },
-			{ { "S0", "z2" }, "S4" },
-			{ { "S1", "z1" }, "S0" },
-			{ { "S1", "z2" }, "S1" },
-			{ { "S2", "z1" }, "S0" },
-			{ { "S2", "z2" }, "S1" },
-			{ { "S3", "z1" }, "S2" },
-			{ { "S3", "z2" }, "S4" },
-			{ { "S4", "z1" }, "S1" },
-			{ { "S4", "z2" }, "S3" },
-		},
+		.states = states,
+		.inputSymbols = inputSymbols,
+		.stateSignals = stateSignals,
+		.moves = moves,
 	};
 }
