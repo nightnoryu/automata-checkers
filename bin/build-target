@@ -7,6 +7,7 @@ fi
 
 DIRECTORY="$PWD/$1"
 BUILD_DIRECTORY="$PWD/cmake-build-$1"
+USER_ID=$(id -u)
 
 if [ ! -d "$DIRECTORY" ]; then
   echo "directory '$1' does not exist"
@@ -14,8 +15,6 @@ if [ ! -d "$DIRECTORY" ]; then
 fi
 
 mkdir -p "$BUILD_DIRECTORY"
-
-USER_ID=$(id -u)
 
 docker run -t -i \
   --user "$USER_ID" \
