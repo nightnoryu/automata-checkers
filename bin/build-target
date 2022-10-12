@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 
-mkdir -p cmake-build-$1
+if [ -z "$1" -o -z "$2" ]; then
+  echo "usage: $0 [directory] [cmake target]"
+  exit 1
+fi
+
+DIRECTORY="$PWD/$1"
+BUILD_DIRECTORY="$PWD/cmake-build-$1"
+
+if [ ! -d "$DIRECTORY" ]; then
+  echo "directory '$1' does not exist"
+  exit 1
+fi
+
+mkdir -p "$BUILD_DIRECTORY"
 
 USER_ID=$(id -u)
 
@@ -8,7 +21,7 @@ docker run -t -i \
   --user "$USER_ID" \
   -v /etc/passwd:/etc/passwd:ro \
   -v /etc/group:/etc/group:ro \
-  -v ${PWD}/$1:/app/src \
-  -v ${PWD}/cmake-build-$1:/app/build \
+  -v ${DIRECTORY}:/app/src \
+  -v ${BUILD_DIRECTORY}:/app/build \
   automata-checkers-builder \
   $2
