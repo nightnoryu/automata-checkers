@@ -11,7 +11,8 @@ public:
 private:
 	using Spreadsheet = std::vector<std::vector<std::string>>;
 
-	Spreadsheet GetDataFromFile(const std::string& filename) const;
+	static auto const CSV_SEPARATOR = ';';
+	static auto const STATE_AND_SIGNAL_SEPARATOR = '/';
 
-	const char delimiter = ';';
+	Spreadsheet GetDataFromFile(const std::string& filename) const;
 };

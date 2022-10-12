@@ -20,7 +20,7 @@ CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std:
 		std::istringstream iss(row);
 		std::vector<std::string> rows;
 
-		while (std::getline(iss, cell, delimiter))
+		while (std::getline(iss, cell, CSV_SEPARATOR))
 		{
 			rows.push_back(cell);
 		}
@@ -64,15 +64,13 @@ MealyAutomaton CInputOutputAdapter::GetMealy(const std::string& filename)
 
 			std::stringstream ss(spreadsheet[rowIndex][columnIndex]);
 			std::string element;
-			while (std::getline(ss, element, '/'))
+			while (std::getline(ss, element, STATE_AND_SIGNAL_SEPARATOR))
 			{
 				elements.push_back(element);
 			}
 
-			moves.insert({
-				{ spreadsheet[0][columnIndex], spreadsheet[rowIndex][0] },
-				{ elements[0], elements[1] }
-			});
+			moves.insert({ { spreadsheet[0][columnIndex], spreadsheet[rowIndex][0] },
+				{ elements[0], elements[1] } });
 
 			elements.clear();
 		}
@@ -105,7 +103,10 @@ MooreAutomaton CInputOutputAdapter::GetMoore(const std::string& filename)
 
 			if (rowIndex == 1)
 			{
-				if (columnIndex == 0) { continue; }
+				if (columnIndex == 0)
+				{
+					continue;
+				}
 				states.push_back(spreadsheet[rowIndex][columnIndex]);
 				stateSignals.insert({ spreadsheet[rowIndex][columnIndex], spreadsheet[rowIndex - 1][columnIndex] });
 				continue;
