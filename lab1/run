@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+  echo "usage: $0 [checker executable filename] [mealy|moore] [input csv filename]"
+  exit 1
+fi
+
+CHECKER="$1"
+MODE="$2"
+INPUT_FILE="$3"
+TEMP_FILE="${INPUT_FILE%.*}.dot"
+OUTPUT_FILE="${INPUT_FILE%.*}.png"
+
+if [ ! -f "$CHECKER" ]; then
+    echo "checker executable does not exist"
+    exit 1
+fi
+
+"$CHECKER" "$2" "$3" "$TEMP_FILE"
+dot -Tpng "-o$OUTPUT_FILE" "$TEMP_FILE"
+rm "$TEMP_FILE"
