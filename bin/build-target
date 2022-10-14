@@ -22,5 +22,5 @@ docker run -t -i \
   -v /etc/group:/etc/group:ro \
   -v ${DIRECTORY}:/app/src \
   -v ${BUILD_DIRECTORY}:/app/build \
-  automata-checkers-builder \
+  cmake-builder \
   $2
