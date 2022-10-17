@@ -1,21 +1,38 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
-  echo "usage: $0 [checker executable filename] [mealy|moore] [input csv filename]"
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ] || [ -z "$5" ]; then
+  echo "usage: $0 [checker executable filename] [correct executable] [client executable] [mealy-to-moore|moore-to-mealy] [input csv filename]"
   exit 1
 fi
 
 CHECKER="$1"
-MODE="$2"
-INPUT_FILE="$3"
+CORRECT_EXECUTABLE="$2"
+CLIENT_EXECUTABLE="$3"
+MODE="$4"
+INPUT_FILE="$5"
+
+TEMP_CSV_FILE="${INPUT_FILE%.*}_output.csv"
 TEMP_FILE="${INPUT_FILE%.*}.dot"
+
+CORRECT_OUTPUT_FILE="${INPUT_FILE%.*}_correct.png"
 OUTPUT_FILE="${INPUT_FILE%.*}.png"
 
-if [ ! -f "$CHECKER" ]; then
-    echo "checker executable does not exist"
-    exit 1
+if [ ! -f "$CHECKER" ] || [ ! -f "$CORRECT_EXECUTABLE" ] || [ ! -f "$CLIENT_EXECUTABLE" ]; then
+  echo "some of the executables do not exist"
+  exit 1
 fi
 
-"$CHECKER" "$MODE" "$INPUT_FILE" "$TEMP_FILE"
+CHECKER_MODE="mealy"
+if [ "$MODE" == "mealy-to-moore" ]; then
+  CHECKER_MODE="moore"
+fi
+
+"./$CORRECT_EXECUTABLE" "$MODE" "$INPUT_FILE" "$TEMP_CSV_FILE"
+"./$CHECKER" "$CHECKER_MODE" "$TEMP_CSV_FILE" "$TEMP_FILE"
+dot -Tpng "-o$CORRECT_OUTPUT_FILE" "$TEMP_FILE"
+
+"./$CLIENT_EXECUTABLE" "$MODE" "$INPUT_FILE" "$TEMP_CSV_FILE"
+"./$CHECKER" "$CHECKER_MODE" "$TEMP_CSV_FILE" "$TEMP_FILE"
 dot -Tpng "-o$OUTPUT_FILE" "$TEMP_FILE"
-rm "$TEMP_FILE"
+
+rm -f "$TEMP_CSV_FILE" "$TEMP_FILE"
