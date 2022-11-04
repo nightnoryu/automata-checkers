@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "usage: $0 [directory] [cmake target]"
+if [ -z "$1" ]; then
+  echo "usage: $0 [cmake target]"
   exit 1
 fi
 
-DIRECTORY="$PWD/$1"
-BUILD_DIRECTORY="$PWD/cmake-build-$1"
+SOURCE_DIRECTORY="$PWD"
+BUILD_DIRECTORY="$PWD/cmake-build"
 USER_ID=$(id -u)
-
-if [ ! -d "$DIRECTORY" ]; then
-  echo "directory '$1' does not exist"
-  exit 1
-fi
 
 mkdir -p "$BUILD_DIRECTORY"
 
@@ -20,7 +15,7 @@ docker run -t -i \
   --user "$USER_ID" \
   -v /etc/passwd:/etc/passwd:ro \
   -v /etc/group:/etc/group:ro \
-  -v ${DIRECTORY}:/app/src \
-  -v ${BUILD_DIRECTORY}:/app/build \
+  -v "${SOURCE_DIRECTORY}:/app/src" \
+  -v "${BUILD_DIRECTORY}:/app/build" \
   cmake-builder \
-  $2
+  "$1"

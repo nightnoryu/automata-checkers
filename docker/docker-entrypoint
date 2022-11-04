@@ -3,4 +3,4 @@
 cd /app/build
 
 cmake ../src
-cmake --build . --target $1
+cmake --build . --target "$1"
