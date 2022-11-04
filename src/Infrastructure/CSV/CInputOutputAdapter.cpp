@@ -3,35 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(const std::string& filename) const
-{
-	std::ifstream input(filename);
-	if (!input.is_open())
-	{
-		throw std::runtime_error("failed to open input file for reading");
-	}
-
-	Spreadsheet spreadsheet;
-	std::string row;
-	std::string cell;
-
-	while (std::getline(input, row))
-	{
-		std::istringstream iss(row);
-		std::vector<std::string> rows;
-
-		while (std::getline(iss, cell, CSV_SEPARATOR))
-		{
-			rows.push_back(cell);
-		}
-
-		spreadsheet.push_back(rows);
-	}
-
-	return spreadsheet;
-}
-
-MealyAutomaton CInputOutputAdapter::GetMealy(const std::string& filename)
+MealyAutomaton CInputOutputAdapter::GetMealy(std::string const& filename)
 {
 	Spreadsheet spreadsheet = GetDataFromFile(filename);
 
@@ -83,7 +55,7 @@ MealyAutomaton CInputOutputAdapter::GetMealy(const std::string& filename)
 	};
 }
 
-MooreAutomaton CInputOutputAdapter::GetMoore(const std::string& filename)
+MooreAutomaton CInputOutputAdapter::GetMoore(std::string const& filename)
 {
 	Spreadsheet spreadsheet = GetDataFromFile(filename);
 
@@ -128,4 +100,58 @@ MooreAutomaton CInputOutputAdapter::GetMoore(const std::string& filename)
 		.stateSignals = stateSignals,
 		.moves = moves,
 	};
+}
+
+FiniteAutomaton CInputOutputAdapter::GetFinite(std::string const& filename)
+{
+	// TODO: implement
+	//  1. Отсутствие перехода обозначается -
+	//  2. В строке сигналов либо пусто, либо F, что обозначает финальное состояние
+
+	// Пример:
+	/*
+	 ;;F
+	 ;q0;q1
+	 a;q0;-
+	 b;-;q1
+	 e;q1;-
+	*/
+
+	return {
+		.states = { { "q0", false }, { "q1", true } },
+		.inputSymbols = { "a", "b", "e" },
+		.moves = {
+			{ { "q0", "a" }, "q0" },
+			{ { "q0", "e" }, "q1" },
+			{ { "q1", "b" }, "q1" },
+		},
+	};
+}
+
+CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(std::string const& filename)
+{
+	std::ifstream input(filename);
+	if (!input.is_open())
+	{
+		throw std::runtime_error("failed to open input file for reading");
+	}
+
+	Spreadsheet spreadsheet;
+	std::string row;
+	std::string cell;
+
+	while (std::getline(input, row))
+	{
+		std::istringstream iss(row);
+		std::vector<std::string> rows;
+
+		while (std::getline(iss, cell, CSV_SEPARATOR))
+		{
+			rows.push_back(cell);
+		}
+
+		spreadsheet.push_back(rows);
+	}
+
+	return spreadsheet;
 }

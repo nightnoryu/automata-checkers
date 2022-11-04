@@ -10,6 +10,7 @@ public:
 
 	void DrawMealy(std::string const& inputFilename, std::string const& outputFilename);
 	void DrawMoore(std::string const& inputFilename, std::string const& outputFilename);
+	void DrawFinite(std::string const& inputFilename, std::string const& outputFilename);
 
 private:
 	IInputOutputAdapterPtr m_inputOutputAdapter;

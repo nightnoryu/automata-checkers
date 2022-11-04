@@ -5,11 +5,13 @@
 
 inline const std::string_view MEALY_TYPE = "mealy";
 inline const std::string_view MOORE_TYPE = "moore";
+inline const std::string_view FINITE_TYPE = "finite";
 
 enum class AutomatonType
 {
 	Mealy,
 	Moore,
+	Finite,
 };
 
 struct Args
@@ -23,7 +25,7 @@ Args ParseArgs(int argc, char** argv)
 {
 	if (argc != 4)
 	{
-		throw std::invalid_argument("usage: lab1-checker [mealy|moore] [input csv filename] [output dot filename]");
+		throw std::invalid_argument("usage: " + std::string(argv[0]) + " [mealy|moore|finite] [input csv filename] [output dot filename]");
 	}
 
 	AutomatonType type;
@@ -36,9 +38,13 @@ Args ParseArgs(int argc, char** argv)
 	{
 		type = AutomatonType::Moore;
 	}
+	else if (strType == FINITE_TYPE)
+	{
+		type = AutomatonType::Finite;
+	}
 	else
 	{
-		throw std::invalid_argument("invalid automaton type, choose 'mealy' or 'moore'");
+		throw std::invalid_argument("invalid automaton type, choose 'mealy', 'moore' or 'finite'");
 	}
 
 	return {
@@ -65,6 +71,9 @@ int main(int argc, char** argv)
 			break;
 		case AutomatonType::Moore:
 			service.DrawMoore(args.inputFilename, args.outputFilename);
+			break;
+		case AutomatonType::Finite:
+			service.DrawFinite(args.inputFilename, args.outputFilename);
 			break;
 		}
 	}

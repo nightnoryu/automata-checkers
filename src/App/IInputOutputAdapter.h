@@ -21,7 +21,7 @@ struct KeyHash
 
 struct KeyEqual
 {
-	bool operator()(const InitialStateAndInputSymbol& lhs, const InitialStateAndInputSymbol& rhs) const
+	bool operator()(InitialStateAndInputSymbol const& lhs, InitialStateAndInputSymbol const& rhs) const
 	{
 		return lhs.state == rhs.state && lhs.symbol == rhs.symbol;
 	}
@@ -51,11 +51,25 @@ struct MooreAutomaton
 	MooreMoves moves;
 };
 
+struct StateWithFinalIndication
+{
+	std::string state;
+	bool isFinal;
+};
+
+struct FiniteAutomaton
+{
+	std::vector<StateWithFinalIndication> states;
+	std::vector<std::string> inputSymbols;
+	MooreMoves moves;
+};
+
 class IInputOutputAdapter
 {
 public:
 	virtual MealyAutomaton GetMealy(std::string const& filename) = 0;
 	virtual MooreAutomaton GetMoore(std::string const& filename) = 0;
+	virtual FiniteAutomaton GetFinite(std::string const& filename) = 0;
 
 	virtual ~IInputOutputAdapter() = default;
 };

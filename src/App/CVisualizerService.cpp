@@ -6,7 +6,7 @@ CVisualizerService::CVisualizerService(IInputOutputAdapterPtr&& inputOutputAdapt
 {
 }
 
-void CVisualizerService::DrawMealy(const std::string& inputFilename, const std::string& outputFilename)
+void CVisualizerService::DrawMealy(std::string const& inputFilename, std::string const& outputFilename)
 {
 	auto const automaton = m_inputOutputAdapter->GetMealy(inputFilename);
 
@@ -35,7 +35,7 @@ void CVisualizerService::DrawMealy(const std::string& inputFilename, const std::
 	m_graphVisualizer->DrawGraph(outputFilename);
 }
 
-void CVisualizerService::DrawMoore(const std::string& inputFilename, const std::string& outputFilename)
+void CVisualizerService::DrawMoore(std::string const& inputFilename, std::string const& outputFilename)
 {
 	auto const automaton = m_inputOutputAdapter->GetMoore(inputFilename);
 
@@ -49,6 +49,44 @@ void CVisualizerService::DrawMoore(const std::string& inputFilename, const std::
 	for (std::size_t i = 0; i < automaton.states.size(); ++i)
 	{
 		stateToIndexMap[automaton.states[i]] = static_cast<int>(i);
+	}
+
+	IGraphVisualizer::Edges edges;
+	for (auto&& [stateAndSymbol, state] : automaton.moves)
+	{
+		IGraphVisualizer::Edge edge = {
+			.from = stateToIndexMap[stateAndSymbol.state],
+			.to = stateToIndexMap[state],
+			.label = stateAndSymbol.symbol,
+		};
+		edges.push_back(std::move(edge));
+	}
+
+	m_graphVisualizer->SetVertices(std::move(vertices));
+	m_graphVisualizer->SetEdges(std::move(edges));
+
+	m_graphVisualizer->DrawGraph(outputFilename);
+}
+
+void CVisualizerService::DrawFinite(std::string const& inputFilename, std::string const& outputFilename)
+{
+	auto const automaton = m_inputOutputAdapter->GetFinite(inputFilename);
+
+	IGraphVisualizer::Vertices vertices;
+	for (auto&& [state, isFinal] : automaton.states)
+	{
+		auto vertex = state;
+		if (isFinal)
+		{
+			vertex += " (F)";
+		}
+		vertices.push_back(vertex);
+	}
+
+	std::unordered_map<std::string, int> stateToIndexMap;
+	for (std::size_t i = 0; i < automaton.states.size(); ++i)
+	{
+		stateToIndexMap[automaton.states[i].state] = static_cast<int>(i);
 	}
 
 	IGraphVisualizer::Edges edges;

@@ -15,3 +15,7 @@ cmake-build*
 
 # IDE settings
 .idea/
+
+# Artifacts
+*.png
+*.csv

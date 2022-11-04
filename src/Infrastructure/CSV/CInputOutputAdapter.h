@@ -5,8 +5,9 @@
 class CInputOutputAdapter : public IInputOutputAdapter
 {
 public:
-	MealyAutomaton GetMealy(const std::string& filename) override;
-	MooreAutomaton GetMoore(const std::string& filename) override;
+	MealyAutomaton GetMealy(std::string const& filename) override;
+	MooreAutomaton GetMoore(std::string const& filename) override;
+	FiniteAutomaton GetFinite(std::string const& filename) override;
 
 private:
 	using Spreadsheet = std::vector<std::vector<std::string>>;
@@ -14,5 +15,5 @@ private:
 	static auto const CSV_SEPARATOR = ';';
 	static auto const STATE_AND_SIGNAL_SEPARATOR = '/';
 
-	Spreadsheet GetDataFromFile(const std::string& filename) const;
+	static Spreadsheet GetDataFromFile(std::string const& filename);
 };
