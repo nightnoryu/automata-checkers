@@ -104,27 +104,50 @@ MooreAutomaton CInputOutputAdapter::GetMoore(std::string const& filename)
 
 FiniteAutomaton CInputOutputAdapter::GetFinite(std::string const& filename)
 {
-	// TODO: implement
-	//  1. Отсутствие перехода обозначается -
-	//  2. В строке сигналов либо пусто, либо F, что обозначает финальное состояние
+	Spreadsheet spreadsheet = GetDataFromFile(filename);
 
-	// Пример:
-	/*
-	 ;;F
-	 ;q0;q1
-	 a;q0;-
-	 b;-;q1
-	 e;q1;-
-	*/
+	std::vector<StateWithFinalIndication> states;
+	std::vector<std::string> inputSymbols;
+	MooreMoves moves;
+
+	for (int rowIndex = 0; rowIndex < spreadsheet.size(); ++rowIndex)
+	{
+		for (int columnIndex = 0; columnIndex < spreadsheet[rowIndex].size(); ++columnIndex)
+		{
+			if (rowIndex == 0 && columnIndex == 0 || rowIndex == 1)
+			{
+				continue;
+			}
+
+			if (rowIndex == 0)
+			{
+				bool isFinal = spreadsheet[rowIndex][columnIndex] == FINAL_STATE;
+				states.push_back({
+					spreadsheet[rowIndex + 1][columnIndex],
+					isFinal
+				});
+				continue;
+			}
+
+			if (columnIndex == 0)
+			{
+				inputSymbols.push_back(spreadsheet[rowIndex][columnIndex]);
+				continue;
+			}
+
+			if (spreadsheet[rowIndex][columnIndex] == EMPTY_MOVE)
+			{
+				continue;
+			}
+
+			moves.insert({ { spreadsheet[1][columnIndex], spreadsheet[rowIndex][0] }, spreadsheet[rowIndex][columnIndex] });
+		}
+	}
 
 	return {
-		.states = { { "q0", false }, { "q1", true } },
-		.inputSymbols = { "a", "b", "e" },
-		.moves = {
-			{ { "q0", "a" }, "q0" },
-			{ { "q0", "e" }, "q1" },
-			{ { "q1", "b" }, "q1" },
-		},
+		.states = states,
+		.inputSymbols = inputSymbols,
+		.moves = moves
 	};
 }
 
