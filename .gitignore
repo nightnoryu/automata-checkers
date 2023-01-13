@@ -17,5 +17,6 @@ cmake-build*
 .idea/
 
 # Artifacts
-*.png
 *.csv
+*.dot
+*.png
