@@ -122,10 +122,8 @@ FiniteAutomaton CInputOutputAdapter::GetFinite(std::string const& filename)
 			if (rowIndex == 0)
 			{
 				bool isFinal = spreadsheet[rowIndex][columnIndex] == FINAL_STATE;
-				states.push_back({
-					spreadsheet[rowIndex + 1][columnIndex],
-					isFinal
-				});
+				states.push_back({ spreadsheet[rowIndex + 1][columnIndex],
+					isFinal });
 				continue;
 			}
 
@@ -174,6 +172,16 @@ CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(std::strin
 		}
 
 		spreadsheet.push_back(rows);
+	}
+
+	auto const firstRowSize = spreadsheet[0].size();
+	auto const secondRowSize = spreadsheet[1].size();
+	if (firstRowSize < secondRowSize)
+	{
+		for (std::size_t i = firstRowSize; i < secondRowSize; ++i)
+		{
+			spreadsheet[0].emplace_back("");
+		}
 	}
 
 	return spreadsheet;
