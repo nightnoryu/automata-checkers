@@ -112,24 +112,19 @@ FiniteAutomaton CInputOutputAdapter::GetFinite(std::string const& filename)
 
 	for (int rowIndex = 0; rowIndex < spreadsheet.size(); ++rowIndex)
 	{
-		if (rowIndex == 1)
-		{
-			continue;
-		}
-
 		for (int columnIndex = 0; columnIndex < spreadsheet[rowIndex].size(); ++columnIndex)
 		{
+			if (rowIndex == 0 && columnIndex == 0 || rowIndex == 1)
+			{
+				continue;
+			}
+
 			if (rowIndex == 0)
 			{
-				if (columnIndex == 0)
-				{
-					continue;
-				}
-
 				bool isFinal = spreadsheet[rowIndex][columnIndex] == FINAL_STATE;
 				states.push_back({
-					.state = spreadsheet[rowIndex + 1][columnIndex],
-					.isFinal = isFinal,
+					spreadsheet[rowIndex + 1][columnIndex],
+					isFinal
 				});
 				continue;
 			}
@@ -173,9 +168,8 @@ CInputOutputAdapter::Spreadsheet CInputOutputAdapter::GetDataFromFile(std::strin
 		std::istringstream iss(row);
 		std::vector<std::string> rows;
 
-		while (iss)
+		while (std::getline(iss, cell, CSV_SEPARATOR))
 		{
-			std::getline(iss, cell, CSV_SEPARATOR);
 			rows.push_back(cell);
 		}
 
